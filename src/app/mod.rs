@@ -322,4 +322,32 @@ impl<'a> App<'a> {
         }
     }
 
+    pub fn play_next_music(&mut self) {
+        if !self.player.empty() {
+            let volume = self.player.volume();
+            self.new_sink().unwrap();
+            self.player.set_volume(volume);
+        }
+        if self.play_music_list.len() > 0 {
+            match get_audio_source(&self.play_music_list[0].path) {
+                Ok(source) => {
+                    self.player.append(source);
+                    let mut music = self.play_music_list.remove(0);
+                    music.start_time = Some(Instant::now());
+                    self.playing_music = Some(music);
+                }
+                Err(err) => {
+                    self.error = Some(err.to_string());
+                    self.playing_music = None;
+                }
+            }
+        } else {
+            self.playing_music = None;
+        }
+    }
+
+    pub fn update_volume(&mut self,f:&dyn Fn(f32) -> f32) {
+
+    }
+
 }
