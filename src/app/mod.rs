@@ -10,6 +10,7 @@ use tui::Terminal;
 
 use crate::file_ops::{self, get_audio_source, DirectoryItem};
 use crate::commands::process_command;
+use crate::music::Music;
 
 
 #[derive(PartialEq)]
@@ -251,7 +252,7 @@ impl<'a> App<'a> {
                         }
                     };
                 }
-                DirectoryItem::Directory(_) => todo!(),
+                _ => {}
             };
         }
     }
@@ -278,4 +279,20 @@ impl<'a> App<'a> {
             };
         }
     }
+
+    pub fn add_music_to_list(&mut self) {
+        match self.get_selected_directory_item() {
+            Some(dir_item) => match dir_item {
+                DirectoryItem::File(path) => {
+                    match Music::new(&path) {
+                        Ok(music) => self.play_music_list.push(music),
+                        Err(err) => self.error = Some(err),
+                    };
+                }
+                DirectoryItem::Directory(_) => self.error =Some(String::from("Is a directory")),
+            }
+            None => {}
+        };
+    }
+
 }

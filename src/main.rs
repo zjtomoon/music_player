@@ -1,7 +1,12 @@
+extern crate tui;
+extern crate rodio;
+extern crate exitfailure;
+
 mod app;
-mod commands;
 mod file_ops;
 mod utils;
+mod commands;
+mod music;
 
 
 fn main() {
