@@ -1,6 +1,7 @@
 extern crate tui;
 extern crate rodio;
 extern crate exitfailure;
+extern crate rand;
 
 mod app;
 mod file_ops;

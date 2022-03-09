@@ -371,6 +371,18 @@ impl<'a> App<'a> {
                 }
             }
         }
+
+        if !self.player.is_paused() {
+            if let Some(playing_music) = &mut self.playing_music {
+                playing_music.play_position = playing_music.start_time.unwrap().elapsed();
+            }
+        }
+    }
+
+    pub fn shuffle_playlist(&mut self) {
+        if self.play_music_list.len() > 1 {
+            self.play_music_list.shuffle(&mut rand::thread_rng());
+        }
     }
 
 }
