@@ -347,7 +347,30 @@ impl<'a> App<'a> {
     }
 
     pub fn update_volume(&mut self,f:&dyn Fn(f32) -> f32) {
+        let volume = f(self.player.volume());
+        self.player.set_volume(volume);
+    }
 
+    pub fn check_music_list(&mut self) {
+        if self.player.empty() {
+            match self.play_style {
+                PlayStyle::PlayOrder =>self.play_next_music(),
+                PlayStyle::SingleCycle => {
+                    if let Some(playing_music) = &mut self.playing_music {
+                        match get_audio_source(&playing_music.path) {
+                            Ok(source) => {
+                                playing_music.play_position = Duration::from_secs(0);
+                                self.player.append(source);
+                                playing_music.start_time = Some(Instant::now());
+                            }
+                            Err(err) => self.error = Some(err.to_string()),
+                        }
+                    } else {
+                        self.play_next_music();
+                    }
+                }
+            }
+        }
     }
 
 }
