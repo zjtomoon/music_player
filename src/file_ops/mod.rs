@@ -12,8 +12,11 @@ use rodio::Source;
 use crate::app::App;
 use crate::utils::split_path::split_path_to_name;
 
+#[derive(Eq,PartialEq,PartialOrd,Ord,Debug,Clone)]
 pub enum DirectoryItem {
+    // File(path)
     File(String),
+    // Directory(path,is_open,content_len)
     Directory(String),
 }
 
@@ -97,7 +100,7 @@ pub fn get_files_for_current_directory_astrict(
         }
         if item.is_file() {
             if check_audio_file(&item)? {
-                let file = DirectoryItem::File(path_string)
+                let file = DirectoryItem::File(path_string);
                 files.push(file)
             }
         } else {
@@ -117,3 +120,33 @@ pub fn check_audio_file(path:&PathBuf) -> Result<bool,io::Error> {
     Ok(false)
 }
 
+pub fn read_audio_file<'a>(path:&str,extension:&str) -> Result<Audio,String> {
+    let tag = match Tag::default().read_from_path(path) {
+        Ok(tag) => tag,
+        Err(err) => return Err(err.to_string()),
+    };
+
+    let mut duration = Duration::from_secs(0);
+    if extension == "MP3" || extension == "mp3" {
+        match mp3_duration::from_path(path) {
+            Ok(d) => duration = d,
+            Err(err) => return Err(err.to_string()),
+        };
+    } else {
+       match get_audio_source(path) {
+           Ok(source) => {
+               if let Some(d) = source.total_duration() {
+                   duration = d;
+               };
+           }
+           Err(err) => return Err(err.to_string()),
+       };
+    };
+    Ok(Audio::new(tag,duration))
+}
+
+
+pub fn get_audio_source(path:&str) -> Result<Decoder<File>,DecoderError> {
+    let file = File::open(path).unwrap();
+    Decoder::new(file)
+}
