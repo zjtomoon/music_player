@@ -295,4 +295,31 @@ impl<'a> App<'a> {
         };
     }
 
+    pub fn add_all_music_to_list(&mut self) {
+        for item in self.directory_contents {
+            match item {
+                DirectoryItem::File(path) => {
+                    match Music::new(&path) {
+                        Ok(music) => self.play_music_list.push(music),
+                        Err(err) => self.error = Some(err),
+                    };
+                }
+                _ => {}
+            }
+        }
+    }
+
+    pub fn stop_or_start_play(&mut self) {
+        if self.player.is_paused() {
+            self.player.play();
+            if let Some(music) = &mut self.playing_music {
+                if let Some(stat_time) = &mut music.start_time {
+                    *stat_time = Instant::now() - music.play_position;
+                }
+            }
+        } else {
+            self.player.pause();
+        }
+    }
+
 }
