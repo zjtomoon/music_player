@@ -385,4 +385,42 @@ impl<'a> App<'a> {
         }
     }
 
+    pub fn remove_play_list_by_id(&mut self,mut to_remove:Vec<usize>) {
+        to_remove.sort();
+        to_remove.reverse();
+        for index in to_remove {
+            if index <= self.play_music_list.len() {
+                self.play_music_list.remove(index);
+            }
+        }
+    }
+
+    pub fn clear_play_music_list(&mut self) {
+        if self.play_music_list.len() > 0 {
+            self.play_music_list = Vec::new();
+        }
+    }
+
+    pub fn execute_search(&mut self) {
+        let mut astrict = self.get_search_string();
+        if astrict.len() > 0 {
+            astrict.remove(0)
+        }
+        self.mode = Mode::Browse;
+        match self.populate_search_file(&astrict) {
+            Ok(_) => {}
+            Err(err) => self.error = Some(err.to_string()),
+        };
+    }
+
+    pub fn execute_command(&mut self) {
+        let command_string = self.get_command_string();
+        self.command_buffer = Vec::new();
+        process_command(self,command_string);
+        self.set_mode(Mode::Browse);
+        match self.populate_files() {
+            Ok(_) => {}
+            Err(err) => self.error = Some(err.to_string()),
+        }
+    }
 }
