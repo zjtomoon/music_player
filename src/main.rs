@@ -1,5 +1,7 @@
 extern crate exitfailure;
 extern crate crossterm;
+extern crate tui;
+extern crate rodio;
 
 mod app;
 mod file_ops;
