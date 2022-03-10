@@ -8,6 +8,7 @@ use crate::config::InitTheme;
 pub mod color;
 mod display;
 mod music_list;
+mod play_music_list;
 
 pub fn handle_theme(init_theme:InitTheme) -> Theme {
 
