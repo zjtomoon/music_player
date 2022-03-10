@@ -52,11 +52,65 @@ pub fn draw_music_list<B: Backend>(
             match &files[i] {
                 DirectoryItem::File(path) => {
                     let name = split_path_to_name(path);
-                    music_names.push() // todo: get_spans()
+                    music_names.push(get_spans(
+                        " 🎵 ".to_string(),
+                        name.to_string(),
+                        theme.list_icon_color,
+                        theme.list_music_color,
+                    )); // todo: get_spans()
+                }
+
+                DirectoryItem::Directory(path) => {
+                    let name = split_path_to_name(path);
+
+                    music_names.push(get_spans(
+                        " 🎶 ".to_string(),
+                        name.to_string(),
+                        theme.list_icon_color,
+                        theme.list_folder_color,
+                    ));
                 }
             }
         }
+
+        //set style for selected music
+        let remove_sum = selected_index - ((display.page.0 - 1) * window_height);
+        let names = music_names.remove(remove_sum);
+        let mut icon_name: Vec<String> = names
+            .0
+            .iter()
+            .map(|span| span.content.to_string())
+            .collect();
+        icon_name[1].insert_str(0, "➡");
+        music_names.insert(
+            remove_sum,
+            get_spans(
+                icon_name[0].to_string(),
+                icon_name[1].to_string(),
+                theme.list_icon_color,
+                theme.list_selected_color,
+            ),
+        );
     }
+
+    // create the list chunks
+    let inner_rect = Rect::new(area.x + 1, area.y + 1, area.width - 2, area.height - 2);
+    let chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Length(3), Constraint::Min(3)])
+        .split(inner_rect);
+
+    if let Some(error) = error {
+        // Display error block
+        draw_error(frame, chunks[0], error);
+    } else if command_string.len() != 0 {
+        // Display search block
+        draw_command(frame, chunks[0], theme, command_string);
+    } else {
+        draw_search(frame, chunks[0], theme, search_string);
+    }
+
+    frame.render_widget(Paragraph::new(music_names),chunks[1]);
 }
 
 fn get_spans(icon: String, name: String, icon_color: Color, name_color: Color) -> Spans<'static> {
@@ -68,7 +122,7 @@ fn get_spans(icon: String, name: String, icon_color: Color, name_color: Color) -
 
 fn draw_search<B: Backend>(frame: &mut Frame<B>, area: Rect, theme: &Theme, search_string: &str) {
     let text = Text::from(Spans::from(vec![
-        Span::styled("🔍 ", Style::default().fg(theme.search_icon_color)),
+        Span::styled(" 🔍 ", Style::default().fg(theme.search_icon_color)),
         Span::styled(search_string, Style::default().fg(theme.search_font_color)),
     ]));
 
@@ -101,5 +155,13 @@ fn draw_command<B: Backend>(frame: &mut Frame<B>, area: Rect, theme: &Theme, com
 
 
 fn draw_error<B: Backend>(frame: &mut Frame<B>, area: Rect, error: &str) {
-
+    let text = Spans::from(Span::styled(error, Style::default().fg(Color::LightRed)));
+    let err_paragraph = Paragraph::new(text).block(
+        Block::default()
+            .title(Span::styled(" Error ", Style::default().fg(Color::LightRed)))
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded)
+            .style(Style::default().fg(Color::LightRed)),
+    );
+    frame.render_widget(err_paragraph, area);
 }
