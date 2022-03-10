@@ -33,5 +33,6 @@ fn remove_command(app: &mut App, splist_command: Vec<String>) {
     }
     if remove_index.len() > 0 {
         // todo:app.remove_play_list_by_id()
+        app.remove_play_list_by_id(remove_index);
     }
 }

@@ -1,13 +1,12 @@
-extern crate tui;
-extern crate rodio;
 extern crate exitfailure;
-extern crate rand;
+extern crate crossterm;
 
 mod app;
 mod file_ops;
 mod utils;
 mod commands;
 mod music;
+mod handler;
 
 
 fn main() {

@@ -74,6 +74,7 @@ impl<'a> App<'a> {
         };
 
         // todo: populate_files()
+        app.populate_files()?;
 
         Ok(app)
     }
@@ -296,7 +297,7 @@ impl<'a> App<'a> {
     }
 
     pub fn add_all_music_to_list(&mut self) {
-        for item in self.directory_contents {
+        for item in &self.directory_contents {
             match item {
                 DirectoryItem::File(path) => {
                     match Music::new(&path) {
@@ -404,11 +405,11 @@ impl<'a> App<'a> {
     pub fn execute_search(&mut self) {
         let mut astrict = self.get_search_string();
         if astrict.len() > 0 {
-            astrict.remove(0)
+            astrict.remove(0);
         }
         self.mode = Mode::Browse;
         match self.populate_search_file(&astrict) {
-            Ok(_) => {}
+            Ok(_) => {},
             Err(err) => self.error = Some(err.to_string()),
         };
     }
