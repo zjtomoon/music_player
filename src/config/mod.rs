@@ -1,13 +1,16 @@
 use std::path::PathBuf;
 
 use exitfailure::ExitFailure;
+use serde::{Deserialize,Serialize};
 
-#[derive(Debug,Serialize,Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct InitConfig {
     pub music_database:String,
     pub theme:InitTheme,
 }
 
+
+#[derive(Debug,Serialize,Deserialize)]
 pub struct InitTheme {
     pub list_title_color:String,
     pub list_title_page_color:String,

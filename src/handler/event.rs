@@ -69,6 +69,7 @@ pub fn handle_event(app:&mut App,music_database:&str) -> Result<bool,ExitFailure
                     app.set_mode(app::Mode::Browse);
                     app.command_buffer = Vec::new();
                 }
+                _ => {}
             }
         }
     }

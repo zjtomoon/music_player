@@ -11,6 +11,7 @@ mod commands;
 mod music;
 mod handler;
 mod config;
+mod view;
 
 
 fn main() {
