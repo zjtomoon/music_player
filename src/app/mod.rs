@@ -26,7 +26,7 @@ pub enum PlayStyle {
 }
 
 pub struct App<'a> {
-    pub terminal: &'a Terminal<CrosstermBackend<Stdout>>,
+    pub terminal: &'a mut Terminal<CrosstermBackend<Stdout>>,
     pub selection_index: Option<usize>,
     pub current_directory: path::PathBuf,
     pub directory_contents: Vec<DirectoryItem>,
@@ -239,7 +239,7 @@ impl<'a> App<'a> {
         if let Some(selection_index) = self.selection_index {
             match &self.directory_contents[selection_index] {
                 DirectoryItem::File(_) => {}
-                DirectoryItem::File(path) => {
+                DirectoryItem::Directory(path) => {
                     let previous_dir = self.current_directory.clone();
                     self.current_directory.push(path);
                     if let Err(err) = self.populate_files() {
@@ -253,7 +253,6 @@ impl<'a> App<'a> {
                         }
                     };
                 }
-                _ => {}
             };
         }
     }

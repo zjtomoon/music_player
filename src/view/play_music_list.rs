@@ -165,7 +165,7 @@ fn draw_play_list<B: Backend>(
         let playing_music_s = playing_music.total_duration.as_secs() % 60;
         let playing_music_m = playing_music.total_duration.as_secs() / 60;
         let mut lable = "  ";
-        if os_paused {
+        if is_paused {
             lable = "  ";
         }
         names.push(Spans::from(vec![

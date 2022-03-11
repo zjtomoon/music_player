@@ -3,6 +3,7 @@ use std::time::{Instant,Duration};
 use crate::file_ops::read_audio_file;
 use crate::utils::split_path::split_path_to_name;
 
+#[derive(PartialEq,Clone)]
 pub struct Music {
     pub path:String,
     pub name:String,
