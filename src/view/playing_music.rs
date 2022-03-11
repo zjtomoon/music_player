@@ -15,7 +15,7 @@ pub fn draw_playing_music<B:Backend>(
     area:Rect,
     theme:&Theme,
     playing_music:&Option<Music>,
-    is_paused:f32,
+    is_paused:bool,
     volume:f32,
     play_style:&PlayStyle,
 ) {
