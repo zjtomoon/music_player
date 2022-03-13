@@ -237,7 +237,7 @@ fn draw_play_list<B: Backend>(
     albums.insert(
         0,
         Spans::from(vec![Span::styled(
-            "Albun",
+            "Album",
             Style::default().fg(theme.play_music_list_header_color),
         )]),
     );
